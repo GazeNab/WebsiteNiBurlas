@@ -38,6 +38,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <link rel="stylesheet" href="css/styleb.css">
 </head>
 <body>
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="videos/vid.mp4" type="video/mp4">
+  </video>
+
   <div class="box">
     <h2>Sign In</h2>
 

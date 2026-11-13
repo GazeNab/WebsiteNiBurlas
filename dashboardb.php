@@ -18,6 +18,10 @@ $result = $conn->query("SELECT id, username, email, created_at FROM users ORDER 
   <link rel="stylesheet" href="css/styleb.css">
 </head>
 <body>
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="videos/vid.mp4" type="video/mp4">
+  </video>
+
   <div class="box" style="width: 600px;">
     <h2>Welcome, <?= htmlspecialchars($_SESSION["username"]) ?></h2>
 
