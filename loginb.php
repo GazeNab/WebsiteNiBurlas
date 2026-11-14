@@ -1,31 +1,30 @@
 <?php
-session_start();
 require_once "config/db.php";
 
 $message = "";
+$isSuccess = false;
 
 if (isset($_GET["registered"])) {
     $message = "Registration successful. Please log in.";
+    $isSuccess = true;
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $email = trim($_POST["email"]);
+    $username = trim($_POST["username"]);
     $password = $_POST["password"];
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
+    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
     $stmt->close();
 
     if ($user && password_verify($password, $user["password"])) {
-        $_SESSION["user_id"] = $user["id"];
-        $_SESSION["username"] = $user["username"];
-        header("Location: dashboardb.php");
-        exit;
+        $message = "Login successful. Welcome, " . htmlspecialchars($user["full_name"]) . "!";
+        $isSuccess = true;
     } else {
-        $message = "Wrong email or password.";
+        $message = "Wrong username or password.";
     }
 }
 ?>
@@ -34,28 +33,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In</title>
+  <title>Login</title>
   <link rel="stylesheet" href="css/styleb.css">
 </head>
 <body>
-  <video class="bg-video" autoplay muted loop playsinline>
-    <source src="videos/vid.mp4" type="video/mp4">
-  </video>
-
   <div class="box">
-    <h2>Sign In</h2>
+    <h2>Login</h2>
 
     <?php if ($message): ?>
-      <p class="<?= isset($_GET['registered']) ? 'success' : 'message' ?>"><?= htmlspecialchars($message) ?></p>
+      <p class="<?= $isSuccess ? 'success' : 'message' ?>"><?= $message ?></p>
     <?php endif; ?>
 
     <form method="POST" action="">
-      <input type="email" name="email" placeholder="Email" required>
+      <input type="text" name="username" placeholder="Username" required>
       <input type="password" name="password" placeholder="Password" required>
-      <button type="submit">Sign In</button>
+      <button type="submit">Login</button>
     </form>
 
-    <p class="switch">New here? <a href="registerb.php">Create an account</a></p>
+    <p class="switch">No account yet? <a href="registerb.php">Register</a></p>
   </div>
 </body>
 </html>
